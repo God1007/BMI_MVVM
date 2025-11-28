@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">BMI_MVVM</string>
+    <string name="input_the_height_here">请输入身高。</string>
+    <string name="input_the_weight_here">请输入体重。</string>
+    <string name="weight_kg">体重（公斤）</string>
+    <string name="bmi_calculation">BMI计算</string>
+    <string name="see_ur_bmi">查看BMI结果</string>
+    <string name="height_cm">身高（厘米）</string>
+    <string name="bmi_result">您的BMI结果为</string>
+    <string name="advice_average">你看起来状态很好！</string>
+    <string name="bmi_picture_for_adult">成年人BMI参考图</string>
+    <string name="judge_standard">评估标准</string>
+    <string name="adult_18_years_old"><![CDATA[成年人（> 18岁）]]></string>
+    <string name="child_18_years_old"><![CDATA[儿童（≤ 18岁）]]></string>
+    <string name="choose_the_identity_u_r">请选择您的身份</string>
+    <string name="BMIpoc_children">儿童BMI参考图.</string>
+    <string name="age">年龄</string>
+    <string name="gender">性别</string>
+    <string name="male">男</string>
+    <string name="female">女</string>
+    <string name="MissingInflatedId">缺少ID引用</string>
+    <string name="error_empty_fields">请输入身高、体重和年龄</string>
+    <string name="error_invalid_number">请输入有效的数字</string>
+    <string name="error_occurred">发生错误：</string>
+    <string name="out_of_old_range">超出6–18岁范围</string>
+    <string name="YourBMI">您的BMI：</string>
+    <string name="Category">分类：</string>
+    <string name="details_format">身高：%1$s 厘米\n体重：%2$s 公斤\n年龄：%3$s 岁\n性别：%4$s</string>
+    <string name="advice_message">请咨询医疗专业人士以获得建议。</string>
+
+    <!-- 错误标题 -->
+    <string name="error_title_invalid_format">数据格式无效</string>
+    <string name="error_title_missing_data">缺少数据</string>
+    <string name="error_title_unexpected">未知错误</string>
+    <string name="error_title_no_data">未接收到数据</string>
+
+    <!-- 错误描述 -->
+    <string name="error_desc_invalid_format">请检查输入的数值</string>
+    <string name="error_desc_missing_data">请填写所有必填信息</string>
+    <string name="error_desc_unexpected">请重试</string>
+    <string name="error_desc_no_data">请先返回并计算BMI</string>
+
+    <!-- 体重标签 -->
+    <string name="bmi_category_underweight">体重过轻</string>
+    <string name="bmi_category_normal">正常</string>
+    <string name="bmi_category_overweight">超重</string>
+    <string name="bmi_category_obese">肥胖</string>
+    <string name="bmi_category_error">错误！</string>
+    <string name="bmi_category_child_severelyUnderweight">严重偏瘦</string>
+    <string name="bmi_category_child_Underweight">偏瘦</string>
+    <string name="bmi_category_child_AcceptableWeight">体重正常</string>
+    <string name="bmi_category_child_Overweight">偏重</string>
+    <string name="bmi_category_child_Severely_Overweight">严重偏重</string>
+
+    <!-- 建议模板 -->
+    <string name="advice_consult_doctor">请咨询医生以获取专业建议。</string>
+    <string name="advice_consult_pediatrician">请咨询儿科医生以获取建议。</string>
+
+    <!-- 具体建议 -->
+    <!-- 体重过轻 -->
+    <string name="underweight_child_male">增加富含营养的食物，并咨询儿科医生。</string>
+    <string name="underweight_child_female">保持均衡饮食并定期监测成长。</string>
+    <string name="underweight_adult_male">增加蛋白质摄入并结合力量训练。</string>
+    <string name="underweight_adult_female">多摄入营养密度高的食物并适度运动。</string>
+
+    <!-- 正常体重 -->
+    <string name="normal_child_male">保持均衡饮食和规律运动。</string>
+    <string name="normal_child_female">继续保持良好的饮食和活动习惯。</string>
+    <string name="normal_adult_male">维持当前生活方式并定期锻炼。</string>
+    <string name="normal_adult_female">保持良好状态，继续均衡饮食。</string>
+
+    <!-- 超重 -->
+    <string name="overweight_child_male">多参加运动并注意健康饮食。</string>
+    <string name="overweight_child_female">控制食量并增加户外活动。</string>
+    <string name="overweight_adult_male">减少热量摄入并增加有氧运动。</string>
+    <string name="overweight_adult_female">控制饮食并保持规律运动。</string>
+
+    <!-- 肥胖 -->
+    <string name="obese_child_male">请咨询儿科医生制定体重管理计划。</string>
+    <string name="obese_child_female">请寻求医生帮助制定儿童减重方案。</string>
+    <string name="obese_adult_male">请咨询医生制定综合健康计划。</string>
+    <string name="obese_adult_female">请寻求医疗建议以制定可持续的减重计划。</string>
+
+    <!-- 严重体重问题 -->
+    <string name="severely_underweight_child">请立即咨询儿科医生获取营养指导。</string>
+    <string name="severely_underweight_adult">请立即就医并调整饮食结构。</string>
+    <string name="severely_overweight_child">请立即咨询儿科医生进行体重管理。</string>
+    <string name="severely_overweight_adult">请尽快就医获取体重控制建议。</string>
+
+    <!-- 通用前缀 -->
+    <string name="child_prefix">儿童</string>
+    <string name="adult_prefix">成人</string>
+
+    <!-- 状态描述 -->
+    <string name="normal_weight">体重正常</string>
+    <string name="child_is_underweight">儿童体重过轻。</string>
+    <string name="child_has_healthy_weight">儿童体重正常！</string>
+    <string name="child_is_overweight">儿童超重。</string>
+    <string name="child_is_obese">儿童肥胖。</string>
+    <string name="underweight">体重过轻。</string>
+    <string name="healthy_weight">体重健康！</string>
+    <string name="overweight">超重。</string>
+    <string name="obese">肥胖。</string>
+    <string name="severely_underweight">严重偏瘦！</string>
+    <string name="acceptable_weight">健康体重范围。</string>
+    <string name="child_underweight">体重偏轻。</string>
+    <string name="child_overweight">体重偏重。</string>
+    <string name="severely_overweight">严重超重。</string>
+
+    <!-- 建议 -->
+    <string name="acceptable_weight_male">保持当前的饮食与运动习惯。</string>
+    <string name="acceptable_weight_female">继续保持良好的饮食和运动。</string>
+
+    <!-- 儿童具体建议 -->
+    <string name="child_underweight_male">应增加营养丰富的食物并定期检查成长。</string>
+    <string name="child_underweight_female">保持均衡饮食并咨询儿科医生。</string>
+    <string name="child_overweight_male">多参加户外运动并减少甜食。</string>
+    <string name="child_overweight_female">注意健康零食并增加活动时间。</string>
+
+    <string name="input_the_age_here">请输入年龄。</string>
+    <string name="age_input_field">年龄输入框</string>
+    <string name="what_is_bmi">什么是BMI？</string>
+    <string name="bmi_info_text">BMI（身体质量指数）= 体重(kg) ÷ 身高²(m)\n\n它用于评估一个人的体重是否处于健康范围。</string>
+    <string name="bmi_wiki">BMI维基百科</string>
+    <string name="exit">退出</string>
+</resources>

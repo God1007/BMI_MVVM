@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:fillViewport="true">
+
+    <!-- 使用FrameLayout作为中间容器实现完美居中 -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center">
+
+            <!-- BMI 结果 -->
+            <TextView
+                android:id="@+id/report_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginBottom="16dp" />
+
+            <!-- BMI 分类 -->
+            <TextView
+                android:id="@+id/report_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <!-- 用户详细信息 -->
+            <TextView
+                android:id="@+id/report_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="24dp"
+                android:lineSpacingExtra="8dp" />
+
+            <!-- 图像显示 -->
+            <ImageView
+                android:id="@+id/report_image"
+                android:layout_width="228dp"
+                android:layout_height="231dp"
+                android:layout_marginBottom="24dp"
+                android:background="#E0E0E0"
+                android:scaleType="fitCenter" />
+
+            <!-- 健康建议 -->
+            <TextView
+                android:id="@+id/report_advice"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:minHeight="135dp"
+                android:background="@drawable/rounded_corner"
+                android:lineSpacingExtra="8dp"
+                android:padding="16dp"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="22sp" />
+
+        </LinearLayout>
+    </FrameLayout>
+</ScrollView>
