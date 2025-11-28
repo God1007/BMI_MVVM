@@ -3,6 +3,7 @@ package com.example.bmi_mvvm;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,21 +26,22 @@ public class ReportActivity extends AppCompatActivity {
         details = findViewById(R.id.report_details);
         advice = findViewById(R.id.report_advice);
         image = findViewById(R.id.report_image);
+        Button openHistory = findViewById(R.id.open_history_button);
 
         // 初始化 ViewModel
         viewModel = new ViewModelProvider(this).get(BMIReportViewModel.class);
 
         // ✅ Step 1: 从 Intent 或 SharedPreferences 获取数据（防止第一次打开空数据）
         Intent intent = getIntent();
-        SharedPreferences sp = getSharedPreferences("bmi_data", MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences(BMIModel.PREF_NAME, MODE_PRIVATE);
 
         // 如果 Intent 中某个值是 null，就从 SharedPreferences 兜底加载
-        String bmi = getOrDefault(intent.getStringExtra("bmi"), sp.getString("bmi", ""));
-        String bmiCategory = getOrDefault(intent.getStringExtra("bmi_category"), sp.getString("bmi_category", ""));
-        String height = getOrDefault(intent.getStringExtra("height"), sp.getString("height", ""));
-        String weight = getOrDefault(intent.getStringExtra("weight"), sp.getString("weight", ""));
-        String age = getOrDefault(intent.getStringExtra("age"), sp.getString("age", ""));
-        String gender = getOrDefault(intent.getStringExtra("gender"), sp.getString("gender", ""));
+        String bmi = getOrDefault(intent.getStringExtra("bmi"), sp.getString(BMIModel.KEY_BMI, ""));
+        String bmiCategory = getOrDefault(intent.getStringExtra("bmi_category"), sp.getString(BMIModel.KEY_CATEGORY, ""));
+        String height = getOrDefault(intent.getStringExtra("height"), sp.getString(BMIModel.KEY_HEIGHT, ""));
+        String weight = getOrDefault(intent.getStringExtra("weight"), sp.getString(BMIModel.KEY_WEIGHT, ""));
+        String age = getOrDefault(intent.getStringExtra("age"), sp.getString(BMIModel.KEY_AGE, ""));
+        String gender = getOrDefault(intent.getStringExtra("gender"), sp.getString(BMIModel.KEY_GENDER, ""));
 
         // ✅ Step 2: 构造新的 Intent 给 ViewModel（确保字段齐全）
         Intent fixedIntent = new Intent();
@@ -78,6 +80,10 @@ public class ReportActivity extends AppCompatActivity {
             result.setText(getString(R.string.error_occurred) + " " + msg);
             advice.setText("");
         });
+
+        openHistory.setOnClickListener(v ->
+                startActivity(new Intent(ReportActivity.this, HistoryActivity.class))
+        );
     }
 
     /**

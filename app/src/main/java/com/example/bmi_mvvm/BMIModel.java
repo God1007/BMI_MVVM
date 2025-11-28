@@ -5,12 +5,20 @@ import android.content.SharedPreferences;
 
 public class BMIModel {
 
+    public static final String PREF_NAME = "BMI_Data";
+    public static final String KEY_HEIGHT = "height";
+    public static final String KEY_WEIGHT = "weight";
+    public static final String KEY_AGE = "age";
+    public static final String KEY_GENDER = "gender";
+    public static final String KEY_BMI = "bmi";
+    public static final String KEY_CATEGORY = "bmi_category";
+
     private final SharedPreferences sharedPreferences;
     private final Context context;
 
     public BMIModel(Context context) {
         this.context = context.getApplicationContext();
-        sharedPreferences = this.context.getSharedPreferences("BMI_Data", Context.MODE_PRIVATE);
+        sharedPreferences = this.context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 
     // BMI 计算
@@ -83,18 +91,33 @@ public class BMIModel {
     // SharedPreferences
     public void saveData(String height, String weight, String age, String gender) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("height", height);
-        editor.putString("weight", weight);
-        editor.putString("age", age);
-        editor.putString("gender", gender);
+        editor.putString(KEY_HEIGHT, height);
+        editor.putString(KEY_WEIGHT, weight);
+        editor.putString(KEY_AGE, age);
+        editor.putString(KEY_GENDER, gender);
         editor.apply();
     }
 
     public String[] loadData() {
-        String height = sharedPreferences.getString("height", "");
-        String weight = sharedPreferences.getString("weight", "");
-        String age = sharedPreferences.getString("age", "");
-        String gender = sharedPreferences.getString("gender", context.getString(R.string.male));
+        String height = sharedPreferences.getString(KEY_HEIGHT, "");
+        String weight = sharedPreferences.getString(KEY_WEIGHT, "");
+        String age = sharedPreferences.getString(KEY_AGE, "");
+        String gender = sharedPreferences.getString(KEY_GENDER, context.getString(R.string.male));
         return new String[]{height, weight, age, gender};
+    }
+
+    public void saveResult(String bmi, String category) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_BMI, bmi);
+        editor.putString(KEY_CATEGORY, category);
+        editor.apply();
+    }
+
+    public String getLastBmi() {
+        return sharedPreferences.getString(KEY_BMI, "");
+    }
+
+    public String getLastCategory() {
+        return sharedPreferences.getString(KEY_CATEGORY, "");
     }
 }

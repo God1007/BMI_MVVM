@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText heightET, weightET, ageET;
     private RadioGroup genderRadioGroup;
     private Button reportBtn;
+    private Button historyBtn;
     private ImageView imageView;
 
     private BMIViewModel viewModel;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         ageET = findViewById(R.id.yearsold);
         genderRadioGroup = findViewById(R.id.gender_radio_group);
         reportBtn = findViewById(R.id.reportBtn);
+        historyBtn = findViewById(R.id.historyBtn);
         imageView = findViewById(R.id.imageView3);
 
         // 注册 ImageView 的 Context Menu
@@ -53,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         if (data[3].equals(getString(R.string.male))) genderRadioGroup.check(R.id.male_radio);
         else genderRadioGroup.check(R.id.female_radio);
 
+        setupPersistenceListeners();
+
         // LiveData 观察
         viewModel.getBmi().observe(this, bmi -> {
             if (bmi != null) {
@@ -62,18 +67,6 @@ public class MainActivity extends AppCompatActivity {
                 String age = viewModel.getAge().getValue();
                 String gender = viewModel.getGender().getValue();
 
-                // ✅【新增】保存数据到 SharedPreferences，确保 ReportActivity 第一次也能拿到完整数据
-                getSharedPreferences("bmi_data", MODE_PRIVATE)
-                        .edit()
-                        .putString("bmi", bmi)
-                        .putString("bmi_category", category)
-                        .putString("height", height)
-                        .putString("weight", weight)
-                        .putString("age", age)
-                        .putString("gender", gender)
-                        .commit(); // ⚠️ 使用 commit() 同步保存，防止第一次跳转丢失
-
-                // ✅ 然后再跳转 ReportActivity
                 Intent intent = new Intent(MainActivity.this, ReportActivity.class);
                 intent.putExtra("bmi", bmi);
                 intent.putExtra("bmi_category", category);
@@ -97,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
 
             viewModel.calculateBMI(height, weight, age, gender, this);
         });
+
+        historyBtn.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, HistoryActivity.class))
+        );
     }
 
     // 顶部菜单
@@ -130,10 +127,46 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.bmi_wiki_url)));
             context.startActivity(intent);
             return true;
+        } else if (id == R.id.menu_history) {
+            context.startActivity(new Intent(context, HistoryActivity.class));
+            return true;
         } else if (id == R.id.menu_exit) {
             finish();
             return true;
         }
         return false;
+    }
+
+    private void setupPersistenceListeners() {
+        TextWatcher watcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                persistInputs();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        };
+
+        heightET.addTextChangedListener(watcher);
+        weightET.addTextChangedListener(watcher);
+        ageET.addTextChangedListener(watcher);
+
+        genderRadioGroup.setOnCheckedChangeListener((group, checkedId) -> persistInputs());
+    }
+
+    private void persistInputs() {
+        int genderId = genderRadioGroup.getCheckedRadioButtonId();
+        RadioButton selectedGender = findViewById(genderId);
+        String gender = selectedGender != null ? selectedGender.getText().toString() : getString(R.string.male);
+        viewModel.persistInputs(
+                heightET.getText().toString(),
+                weightET.getText().toString(),
+                ageET.getText().toString(),
+                gender
+        );
     }
 }
