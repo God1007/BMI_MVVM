@@ -1,73 +1,52 @@
-package com.example.bmi_mvvm;
+package com.example.bmi_mvvm; // 指定包名，定义仓库类的命名空间
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.ContentValues; // 导入 ContentValues 以插入数据
+import android.content.Context; // 导入 Context 访问数据库
+import android.database.Cursor; // 导入 Cursor 读取查询结果
+import android.database.sqlite.SQLiteDatabase; // 导入 SQLiteDatabase 操作数据库
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.text.SimpleDateFormat; // 导入 SimpleDateFormat 格式化日期
+import java.util.ArrayList; // 导入 ArrayList 用于存储记录
+import java.util.Date; // 导入 Date 获取当前日期
+import java.util.List; // 导入 List 接口
+import java.util.Locale; // 导入 Locale 指定日期格式区域
 
 /**
- * 历史记录仓库，封装对 SQLite 数据库的读写操作。
- * 提供保存当日 BMI 结果以及读取全部历史的接口，供 ViewModel 使用。
+ * 封装历史记录的读写操作，负责将计算结果写入 SQLite 并读取列表。
  */
-public class BMIHistoryRepository {
+public class BMIHistoryRepository { // 定义仓库类
 
-    private final BMIDatabaseHelper dbHelper;
+    private final BMIDatabaseHelper dbHelper; // 数据库助手用于获取可写数据库
 
-    public BMIHistoryRepository(Context context) {
-        dbHelper = new BMIDatabaseHelper(context.getApplicationContext());
-    }
+    public BMIHistoryRepository(Context context) { // 构造函数接收 Context
+        dbHelper = new BMIDatabaseHelper(context); // 初始化数据库助手
+    } // 构造函数结束
 
-    /**
-     * 将当日 BMI 结果保存到数据库。主键是日期，
-     * 因此使用 CONFLICT_REPLACE 保证同一天多次计算会覆盖最新结果。
-     */
-    public void saveTodayResult(double bmiValue) {
-        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+    public void saveTodayResult(double bmi) { // 保存当天的 BMI 结果
+        SQLiteDatabase db = dbHelper.getWritableDatabase(); // 获取可写数据库
+        ContentValues values = new ContentValues(); // 创建 ContentValues 存储字段
+        values.put("date", getTodayDate()); // 写入当前日期
+        values.put("bmi", bmi); // 写入 BMI 数值
+        db.insert("bmi_history", null, values); // 插入到表中
+        db.close(); // 关闭数据库连接
+    } // saveTodayResult 结束
 
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(BMIDatabaseHelper.COLUMN_DATE, today);
-        values.put(BMIDatabaseHelper.COLUMN_BMI, bmiValue);
-        values.put(BMIDatabaseHelper.COLUMN_UPDATED_AT, System.currentTimeMillis());
+    public List<BMIRecord> getHistory() { // 读取历史记录列表
+        List<BMIRecord> records = new ArrayList<>(); // 创建列表存储结果
+        SQLiteDatabase db = dbHelper.getReadableDatabase(); // 获取可读数据库
+        Cursor cursor = db.query("bmi_history", null, null, null, null, null, "id ASC"); // 按 id 升序查询所有记录
+        while (cursor.moveToNext()) { // 遍历结果集
+            String date = cursor.getString(cursor.getColumnIndexOrThrow("date")); // 读取日期字段
+            float bmi = cursor.getFloat(cursor.getColumnIndexOrThrow("bmi")); // 读取 BMI 字段
+            records.add(new BMIRecord(date, bmi)); // 将记录加入列表
+        } // 遍历结束
+        cursor.close(); // 关闭游标
+        db.close(); // 关闭数据库
+        return records; // 返回历史列表
+    } // getHistory 结束
 
-        db.insertWithOnConflict(
-                BMIDatabaseHelper.TABLE_BMI_HISTORY,
-                null,
-                values,
-                SQLiteDatabase.CONFLICT_REPLACE
-        );
-    }
-
-    /**
-     * 读取所有历史记录并按日期升序排序，供历史页面和图表展示。
-     */
-    public List<BMIRecord> getAllRecords() {
-        List<BMIRecord> records = new ArrayList<>();
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        try (Cursor cursor = db.query(
-                BMIDatabaseHelper.TABLE_BMI_HISTORY,
-                new String[]{BMIDatabaseHelper.COLUMN_DATE, BMIDatabaseHelper.COLUMN_BMI, BMIDatabaseHelper.COLUMN_UPDATED_AT},
-                null,
-                null,
-                null,
-                null,
-                BMIDatabaseHelper.COLUMN_DATE + " ASC"
-        )) {
-            while (cursor.moveToNext()) {
-                String date = cursor.getString(cursor.getColumnIndexOrThrow(BMIDatabaseHelper.COLUMN_DATE));
-                float bmi = cursor.getFloat(cursor.getColumnIndexOrThrow(BMIDatabaseHelper.COLUMN_BMI));
-                long updatedAt = cursor.getLong(cursor.getColumnIndexOrThrow(BMIDatabaseHelper.COLUMN_UPDATED_AT));
-                records.add(new BMIRecord(date, bmi, updatedAt));
-            }
-        }
-
-        return records;
-    }
-}
+    private String getTodayDate() { // 获取今日日期字符串
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()); // 创建日期格式化器
+        return sdf.format(new Date()); // 将当前日期格式化成字符串
+    } // getTodayDate 结束
+} // BMIHistoryRepository 类结束

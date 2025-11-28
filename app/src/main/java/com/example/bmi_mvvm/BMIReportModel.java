@@ -1,97 +1,38 @@
-package com.example.bmi_mvvm;
+package com.example.bmi_mvvm; // 指定包名，声明报告模型所在命名空间
 
-import android.content.Context;
+import android.content.Context; // 导入 Context 以访问 SharedPreferences
+import android.content.SharedPreferences; // 导入 SharedPreferences 读取保存的数据
 
 /**
- * 根据 BMI 分类、性别与年龄，生成报告页需要展示的图片和建议文案。
- * 将业务逻辑集中在模型层，保证 ViewModel 只负责数据流转。
+ * 为报告页提供最近一次计算的 BMI 结果，并保存用户在报告页选择的记录。
  */
-public class BMIReportModel {
+public class BMIReportModel { // 定义 BMIReportModel 类
 
-    /**
-     * 根据分类映射到对应的图片与建议，如果分类为空则给出默认提示。
-     */
-    public BMIReportData getBMIReportData(Context context, String bmiCategory, String gender, int age) {
-        BMIReportData data = new BMIReportData();
-        boolean isChild = age < 18;
+    private static final String PREF_NAME = BMIModel.PREF_NAME; // 复用 BMIModel 的偏好文件名
+    private final SharedPreferences sharedPreferences; // SharedPreferences 实例
 
-        String adultUnderweight = context.getString(R.string.bmi_category_underweight);
-        String adultNormal = context.getString(R.string.bmi_category_normal);
-        String adultOverweight = context.getString(R.string.bmi_category_overweight);
-        String adultObese = context.getString(R.string.bmi_category_obese);
+    public BMIReportModel(Context context) { // 构造函数接收 Context
+        sharedPreferences = context.getApplicationContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE); // 初始化 SharedPreferences
+    } // 构造函数结束
 
-        String childSeverelyUnder = context.getString(R.string.bmi_category_child_severelyUnderweight);
-        String childUnder = context.getString(R.string.bmi_category_child_Underweight);
-        String childAcceptable = context.getString(R.string.bmi_category_child_AcceptableWeight);
-        String childOver = context.getString(R.string.bmi_category_child_Overweight);
-        String childSeverelyOver = context.getString(R.string.bmi_category_child_Severely_Overweight);
+    public BMIReportData loadLastReport(Context context) { // 读取最近一次 BMI 结果
+        String bmiValue = sharedPreferences.getString(BMIModel.KEY_BMI, ""); // 读取 BMI 数值
+        String bmiCategory = sharedPreferences.getString(BMIModel.KEY_CATEGORY, ""); // 读取 BMI 分类
+        String height = sharedPreferences.getString(BMIModel.KEY_HEIGHT, ""); // 读取身高
+        String weight = sharedPreferences.getString(BMIModel.KEY_WEIGHT, ""); // 读取体重
+        String age = sharedPreferences.getString(BMIModel.KEY_AGE, ""); // 读取年龄
+        String gender = sharedPreferences.getString(BMIModel.KEY_GENDER, context.getString(R.string.male)); // 读取性别
+        return new BMIReportData(bmiValue, bmiCategory, height, weight, age, gender); // 返回封装好的数据对象
+    } // loadLastReport 结束
 
-        // 没有分类时返回默认图片与文案，避免空指针。
-        if (bmiCategory == null || bmiCategory.isEmpty()) {
-            data.imageRes = R.drawable.bot_fit;
-            data.advice = context.getString(R.string.advice_message);
-            return data;
-        }
-
-        // 成人与儿童分类组合不同，统一在此做映射。
-        if (bmiCategory.equals(adultUnderweight) || bmiCategory.equals(childUnder)) {
-            data.imageRes = R.drawable.bot_thin;
-            data.advice = getUnderweightAdvice(context, gender, isChild);
-        } else if (bmiCategory.equals(adultNormal)) {
-            data.imageRes = R.drawable.bot_fit;
-            data.advice = getNormalWeightAdvice(context, gender, isChild);
-        } else if (bmiCategory.equals(childAcceptable)) {
-            data.imageRes = R.drawable.bot_fit;
-            data.advice = getAcceptableWeightAdvice(context, gender);
-        } else if (bmiCategory.equals(adultOverweight) || bmiCategory.equals(childOver)) {
-            data.imageRes = R.drawable.bot_fat;
-            data.advice = getOverweightAdvice(context, gender, isChild);
-        } else if (bmiCategory.equals(adultObese)) {
-            data.imageRes = R.drawable.bot_fat;
-            data.advice = getObeseAdvice(context, gender, isChild);
-        } else if (bmiCategory.equals(childSeverelyUnder)) {
-            data.imageRes = R.drawable.bot_thin;
-            data.advice = getSeverelyUnderweightAdvice(context, gender, isChild);
-        } else if (bmiCategory.equals(childSeverelyOver)) {
-            data.imageRes = R.drawable.bot_fat;
-            data.advice = getSeverelyOverweightAdvice(context, gender, isChild);
-        } else {
-            data.imageRes = R.drawable.bot_fit;
-            data.advice = context.getString(R.string.advice_message);
-        }
-        return data;
-    }
-
-    // 以下私有方法仅负责返回文字建议
-    private String getUnderweightAdvice(Context context, String gender, boolean isChild) {
-        if (isChild) return context.getString(R.string.child_is_underweight);
-        else return context.getString(R.string.underweight);
-    }
-
-    private String getNormalWeightAdvice(Context context, String gender, boolean isChild) {
-        if (isChild) return context.getString(R.string.child_has_healthy_weight);
-        else return context.getString(R.string.healthy_weight);
-    }
-
-    private String getOverweightAdvice(Context context, String gender, boolean isChild) {
-        if (isChild) return context.getString(R.string.child_is_overweight);
-        else return context.getString(R.string.overweight);
-    }
-
-    private String getObeseAdvice(Context context, String gender, boolean isChild) {
-        if (isChild) return context.getString(R.string.child_is_obese);
-        else return context.getString(R.string.obese);
-    }
-
-    private String getSeverelyUnderweightAdvice(Context context, String gender, boolean isChild) {
-        return context.getString(R.string.severely_underweight);
-    }
-
-    private String getAcceptableWeightAdvice(Context context, String gender) {
-        return context.getString(R.string.acceptable_weight);
-    }
-
-    private String getSeverelyOverweightAdvice(Context context, String gender, boolean isChild) {
-        return context.getString(R.string.severely_overweight);
-    }
-}
+    public void saveReport(BMIReportData data) { // 保存当前报告的数据
+        SharedPreferences.Editor editor = sharedPreferences.edit(); // 获取编辑器
+        editor.putString(BMIModel.KEY_BMI, data.getBmiValue()); // 保存 BMI 数值
+        editor.putString(BMIModel.KEY_CATEGORY, data.getBmiCategory()); // 保存 BMI 分类
+        editor.putString(BMIModel.KEY_HEIGHT, data.getHeight()); // 保存身高
+        editor.putString(BMIModel.KEY_WEIGHT, data.getWeight()); // 保存体重
+        editor.putString(BMIModel.KEY_AGE, data.getAge()); // 保存年龄
+        editor.putString(BMIModel.KEY_GENDER, data.getGender()); // 保存性别
+        editor.apply(); // 异步提交
+    } // saveReport 结束
+} // BMIReportModel 类结束

@@ -1,99 +1,71 @@
-package com.example.bmi_mvvm;
+package com.example.bmi_mvvm; // 指定包名，声明报告页面类的命名空间
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
+import android.os.Bundle; // 导入 Bundle 处理状态
+import android.widget.ImageView; // 导入 ImageView 显示图片
+import android.widget.TextView; // 导入 TextView 显示文本
+
+import androidx.appcompat.app.AppCompatActivity; // 导入 AppCompatActivity 作为活动基类
+import androidx.lifecycle.ViewModelProvider; // 导入 ViewModelProvider 获取 ViewModel
 
 /**
- * 展示 BMI 计算结果的页面，负责从 Intent/缓存中兜底读取数据，
- * 并将 ViewModel 的 LiveData 绑定到 UI 控件。
+ * 展示 BMI 计算结果的 Activity，负责接收数据并显示。
  */
-public class ReportActivity extends AppCompatActivity {
+public class ReportActivity extends AppCompatActivity { // 定义报告页面类
 
-    private TextView result, category, details, advice;
-    private ImageView image;
-    private BMIReportViewModel viewModel;
+    private TextView bmiText, categoryText, heightText, weightText, ageText, genderText; // 结果展示的文本控件
+    private ImageView reportImage; // 根据分类显示图片
+    private BMIReportViewModel viewModel; // 报告页面的 ViewModel
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_report);
+    protected void onCreate(Bundle savedInstanceState) { // 生命周期回调：页面创建
+        super.onCreate(savedInstanceState); // 调用父类初始化
+        setContentView(R.layout.activity_report); // 设置报告页面布局
 
-        // 绑定控件
-        result = findViewById(R.id.report_result);
-        category = findViewById(R.id.report_category);
-        details = findViewById(R.id.report_details);
-        advice = findViewById(R.id.report_advice);
-        image = findViewById(R.id.report_image);
-        Button openHistory = findViewById(R.id.open_history_button);
+        bmiText = findViewById(R.id.bmiText); // 绑定 BMI 数值文本
+        categoryText = findViewById(R.id.categoryText); // 绑定 BMI 分类文本
+        heightText = findViewById(R.id.heightText); // 绑定身高文本
+        weightText = findViewById(R.id.weightText); // 绑定体重文本
+        ageText = findViewById(R.id.ageText); // 绑定年龄文本
+        genderText = findViewById(R.id.genderText); // 绑定性别文本
+        reportImage = findViewById(R.id.reportImage); // 绑定报告图片视图
 
-        // 初始化 ViewModel
-        viewModel = new ViewModelProvider(this).get(BMIReportViewModel.class);
+        viewModel = new ViewModelProvider(this).get(BMIReportViewModel.class); // 获取 ViewModel 实例
 
-        // ✅ Step 1: 从 Intent 或 SharedPreferences 获取数据（防止第一次打开空数据）
-        Intent intent = getIntent();
-        SharedPreferences sp = getSharedPreferences(BMIModel.PREF_NAME, MODE_PRIVATE);
+        if (getIntent().hasExtra("bmi")) { // 如果 Intent 携带了实时计算结果
+            BMIReportData data = new BMIReportData( // 构建报告数据对象
+                    getIntent().getStringExtra("bmi"), // 读取 BMI 数值
+                    getIntent().getStringExtra("bmi_category"), // 读取 BMI 分类
+                    getIntent().getStringExtra("height"), // 读取身高
+                    getIntent().getStringExtra("weight"), // 读取体重
+                    getIntent().getStringExtra("age"), // 读取年龄
+                    getIntent().getStringExtra("gender") // 读取性别
+            ); // 构造函数结束
+            viewModel.saveReport(data); // 保存并更新 LiveData
+        } else { // 如果没有传入数据
+            viewModel.loadReport(); // 加载上一次报告
+        } // 条件判断结束
 
-        // 如果 Intent 中某个值是 null，就从 SharedPreferences 兜底加载
-        String bmi = getOrDefault(intent.getStringExtra("bmi"), sp.getString(BMIModel.KEY_BMI, ""));
-        String bmiCategory = getOrDefault(intent.getStringExtra("bmi_category"), sp.getString(BMIModel.KEY_CATEGORY, ""));
-        String height = getOrDefault(intent.getStringExtra("height"), sp.getString(BMIModel.KEY_HEIGHT, ""));
-        String weight = getOrDefault(intent.getStringExtra("weight"), sp.getString(BMIModel.KEY_WEIGHT, ""));
-        String age = getOrDefault(intent.getStringExtra("age"), sp.getString(BMIModel.KEY_AGE, ""));
-        String gender = getOrDefault(intent.getStringExtra("gender"), sp.getString(BMIModel.KEY_GENDER, ""));
+        viewModel.getReportData().observe(this, this::renderReport); // 观察报告数据变化并渲染界面
+    } // onCreate 结束
 
-        // ✅ Step 2: 构造新的 Intent 给 ViewModel（确保字段齐全）
-        Intent fixedIntent = new Intent();
-        fixedIntent.putExtra("bmi", bmi);
-        fixedIntent.putExtra("bmi_category", bmiCategory);
-        fixedIntent.putExtra("height", height);
-        fixedIntent.putExtra("weight", weight);
-        fixedIntent.putExtra("age", age);
-        fixedIntent.putExtra("gender", gender);
+    private void renderReport(BMIReportData data) { // 根据报告数据更新 UI
+        if (data == null) return; // 若无数据直接返回
 
-        // ✅ Step 3: 调用 ViewModel 加载数据
-        viewModel.loadReportData(fixedIntent, this);
+        bmiText.setText(data.getBmiValue()); // 显示 BMI 数值
+        categoryText.setText(data.getBmiCategory()); // 显示 BMI 分类
+        heightText.setText(getString(R.string.height_with_unit, data.getHeight())); // 显示身高及单位
+        weightText.setText(getString(R.string.weight_with_unit, data.getWeight())); // 显示体重及单位
+        ageText.setText(getString(R.string.age_years, data.getAge())); // 显示年龄及单位
+        genderText.setText(data.getGender()); // 显示性别
 
-        // ✅ Step 4: 绑定 LiveData
-        viewModel.getBmi().observe(this, value ->
-                result.setText(getString(R.string.YourBMI) + " " + value)
-        );
-
-        viewModel.getCategory().observe(this, cat ->
-                category.setText(getString(R.string.Category) + " " + cat)
-        );
-
-        viewModel.getDetails().observe(this, text ->
-                details.setText(text)
-        );
-
-        viewModel.getAdvice().observe(this, text ->
-                advice.setText(text)
-        );
-
-        viewModel.getImageRes().observe(this, resId ->
-                image.setImageResource(resId)
-        );
-
-        viewModel.getError().observe(this, msg -> {
-            result.setText(getString(R.string.error_occurred) + " " + msg);
-            advice.setText("");
-        });
-
-        openHistory.setOnClickListener(v ->
-                startActivity(new Intent(ReportActivity.this, HistoryActivity.class))
-        );
-    }
-
-    /**
-     * 辅助方法：如果 primary 为空则返回 fallback
-     */
-    private String getOrDefault(String primary, String fallback) {
-        return (primary == null || primary.isEmpty()) ? fallback : primary;
-    }
-}
+        String category = data.getBmiCategory(); // 取出分类字符串
+        if (category.contains(getString(R.string.bmi_category_underweight))) { // 判断是否偏瘦
+            reportImage.setImageResource(R.drawable.bot_thin); // 设置偏瘦图片
+        } else if (category.contains(getString(R.string.bmi_category_overweight)) || // 判断是否超重或肥胖
+                category.contains(getString(R.string.bmi_category_obese))) {
+            reportImage.setImageResource(R.drawable.bot_fat); // 设置偏胖图片
+        } else { // 其他情况视为正常
+            reportImage.setImageResource(R.drawable.bot_fit); // 设置正常图片
+        } // 分类判断结束
+    } // renderReport 结束
+} // ReportActivity 类结束
