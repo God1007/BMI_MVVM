@@ -52,13 +52,13 @@ public class BMIViewModel extends ViewModel {
             // 保存数据
             model.saveData(h, w, a, g);
 
-            // 更新 LiveData
-            bmi.setValue(String.format("%.2f", bmiVal));
+            // 先更新除 bmi 以外的字段，确保 bmi 观察者触发时数据完整
             category.setValue(categoryStr);
             height.setValue(h);
             weight.setValue(w);
             age.setValue(a);
             gender.setValue(g);
+            bmi.setValue(String.format("%.2f", bmiVal));
 
         } catch (NumberFormatException e) {
             error.setValue("输入数据格式错误");
