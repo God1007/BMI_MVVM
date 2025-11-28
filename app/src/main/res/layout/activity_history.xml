@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/history_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:navigationIcon="@drawable/ic_arrow_back"
+        app:title="@string/history_title"
+        app:titleTextColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/history_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/history_hint"
+        android:textSize="16sp" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/bmi_line_chart"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="12dp" />
+
+    <TextView
+        android:id="@+id/history_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/history_empty_state"
+        android:textSize="18sp"
+        android:visibility="gone"
+        android:padding="24dp" />
+
+</LinearLayout>

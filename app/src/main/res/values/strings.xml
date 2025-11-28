@@ -126,5 +126,14 @@
     <string name="report_load_failed">Failed to load BMI report</string>
     <string name="bmi_wiki_url">https://en.wikipedia.org/wiki/Body_mass_index</string>
 
+    <!-- 历史记录/趋势 -->
+    <string name="history_title">BMI Trend</string>
+    <string name="history_hint">Your daily BMI results are saved automatically. Check how it changes over time.</string>
+    <string name="history_empty_state">No BMI records yet. Calculate your BMI to start tracking.</string>
+    <string name="history_chart_label">BMI by day</string>
+    <string name="history_chart_description">Latest BMI value per day</string>
+    <string name="menu_history">History</string>
+    <string name="view_history">View BMI History</string>
+
 
 </resources>

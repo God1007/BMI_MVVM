@@ -8,6 +8,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/menu_history"
+        android:title="@string/menu_history"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/menu_exit"
         android:title="@string/exit"
         app:showAsAction="never" />

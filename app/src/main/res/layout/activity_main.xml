@@ -112,6 +112,18 @@
         app:layout_constraintVertical_bias="0.852" />
 
     <Button
+        android:id="@+id/historyBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:text="@string/view_history"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reportBtn"
+        app:layout_constraintVertical_bias="0" />
+
+    <Button
         android:id="@+id/BMI_table_choice_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

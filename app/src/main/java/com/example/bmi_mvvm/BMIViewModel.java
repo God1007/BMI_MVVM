@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 public class BMIViewModel extends ViewModel {
 
     private BMIModel model;
+    private BMIHistoryRepository historyRepository;
 
     private MutableLiveData<String> bmi = new MutableLiveData<>();
     private MutableLiveData<String> category = new MutableLiveData<>();
@@ -19,6 +20,7 @@ public class BMIViewModel extends ViewModel {
 
     public BMIViewModel() {
         model = new BMIModel(App.getContext()); // App.getContext() 或者传入 Context
+        historyRepository = new BMIHistoryRepository(App.getContext());
     }
 
     public LiveData<String> getBmi() { return bmi; }
@@ -28,6 +30,10 @@ public class BMIViewModel extends ViewModel {
     public LiveData<String> getAge() { return age; }
     public LiveData<String> getGender() { return gender; }
     public LiveData<String> getError() { return error; }
+
+    public void persistInputs(String h, String w, String a, String g) {
+        model.saveData(h, w, a, g);
+    }
 
     public void calculateBMI(String h, String w, String a, String g, Context context) {
         if (h.isEmpty() || w.isEmpty() || a.isEmpty()) {
@@ -51,6 +57,8 @@ public class BMIViewModel extends ViewModel {
 
             // 保存数据
             model.saveData(h, w, a, g);
+            model.saveResult(String.format("%.2f", bmiVal), categoryStr);
+            historyRepository.saveTodayResult(bmiVal);
 
             // 先更新除 bmi 以外的字段，确保 bmi 观察者触发时数据完整
             category.setValue(categoryStr);
