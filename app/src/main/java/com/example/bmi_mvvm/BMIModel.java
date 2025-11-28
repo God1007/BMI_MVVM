@@ -3,8 +3,13 @@ package com.example.bmi_mvvm;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+/**
+ * 负责 BMI 计算、分类判定以及用户输入与结果的本地持久化逻辑。
+ * 通过 SharedPreferences 保存最近一次输入与结果，方便再次打开时直接填充。
+ */
 public class BMIModel {
 
+    // SharedPreferences 文件名与键值常量，方便统一管理。
     public static final String PREF_NAME = "BMI_Data";
     public static final String KEY_HEIGHT = "height";
     public static final String KEY_WEIGHT = "weight";
@@ -13,7 +18,13 @@ public class BMIModel {
     public static final String KEY_BMI = "bmi";
     public static final String KEY_CATEGORY = "bmi_category";
 
+    /**
+     * SharedPreferences 负责保存用户输入及计算结果。
+     */
     private final SharedPreferences sharedPreferences;
+    /**
+     * 保存应用级 Context，避免持有 Activity 引用导致内存泄漏。
+     */
     private final Context context;
 
     public BMIModel(Context context) {
@@ -21,13 +32,17 @@ public class BMIModel {
         sharedPreferences = this.context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 
-    // BMI 计算
+    /**
+     * BMI 计算公式：体重(kg) / 身高(m)^2。传入厘米需转换为米。
+     */
     public double calculateBMI(double heightCm, double weightKg) {
         double heightM = heightCm / 100.0;
         return weightKg / (heightM * heightM);
     }
 
-    // 成人 BMI 分类
+    /**
+     * 成人 BMI 分类：按照亚洲标准将 BMI 区间映射成对应的文本类别。
+     */
     public String getAdultBMICategory(double bmi, Context context) {
         if (bmi >= 25.0) return context.getString(R.string.bmi_category_obese);
         else if (bmi >= 23.0) return context.getString(R.string.bmi_category_overweight);
@@ -35,13 +50,18 @@ public class BMIModel {
         else return context.getString(R.string.bmi_category_underweight);
     }
 
-    // 儿童 BMI 分类
+    /**
+     * 儿童 BMI 分类：根据年龄范围与性别选择男/女对应的判定表。
+     */
     public String getChildBMICategory(double bmi, int age, String gender, Context context) {
         if (age < 6 || age > 18) return context.getString(R.string.out_of_old_range);
         if (gender.equals(context.getString(R.string.male))) return getBoyBMICategory(bmi, age, context);
         else return getGirlBMICategory(bmi, age, context);
     }
 
+    /**
+     * 针对男童的 BMI 判定，每个年龄对应一组阈值。
+     */
     private String getBoyBMICategory(double bmi, int age, Context context) {
         switch (age) {
             case 6: return context.getString(categorizeChildBMI(bmi, 12.8, 13.1, 18.8, 21.4));
@@ -61,6 +81,9 @@ public class BMIModel {
         }
     }
 
+    /**
+     * 针对女童的 BMI 判定，阈值与男童不同。
+     */
     private String getGirlBMICategory(double bmi, int age, Context context) {
         switch (age) {
             case 6: return context.getString(categorizeChildBMI(bmi, 12.6, 12.8, 18.3, 20.5));
@@ -80,6 +103,9 @@ public class BMIModel {
         }
     }
 
+    /**
+     * 根据 BMI 与给定阈值返回对应的字符串资源 id，供男女童方法复用。
+     */
     private int categorizeChildBMI(double bmi, double severeUnder, double under, double acceptable, double over) {
         if (bmi <= severeUnder) return R.string.bmi_category_child_severelyUnderweight;
         else if (bmi <= under) return R.string.bmi_category_child_Underweight;
@@ -89,6 +115,9 @@ public class BMIModel {
     }
 
     // SharedPreferences
+    /**
+     * 将当前输入的身高、体重、年龄和性别持久化，便于下次进入自动填充。
+     */
     public void saveData(String height, String weight, String age, String gender) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(KEY_HEIGHT, height);
@@ -98,6 +127,9 @@ public class BMIModel {
         editor.apply();
     }
 
+    /**
+     * 读取最近一次保存的输入，按固定顺序返回字符串数组。
+     */
     public String[] loadData() {
         String height = sharedPreferences.getString(KEY_HEIGHT, "");
         String weight = sharedPreferences.getString(KEY_WEIGHT, "");
@@ -106,6 +138,9 @@ public class BMIModel {
         return new String[]{height, weight, age, gender};
     }
 
+    /**
+     * 保存最新计算的 BMI 数值与分类结果。
+     */
     public void saveResult(String bmi, String category) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(KEY_BMI, bmi);
@@ -113,10 +148,16 @@ public class BMIModel {
         editor.apply();
     }
 
+    /**
+     * 读取最近一次的 BMI 数值，如果不存在则返回空字符串。
+     */
     public String getLastBmi() {
         return sharedPreferences.getString(KEY_BMI, "");
     }
 
+    /**
+     * 读取最近一次的 BMI 分类结果。
+     */
     public String getLastCategory() {
         return sharedPreferences.getString(KEY_CATEGORY, "");
     }

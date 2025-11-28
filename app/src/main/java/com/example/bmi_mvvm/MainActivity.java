@@ -19,6 +19,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+/**
+ * 应用的主界面，负责收集用户输入并驱动 BMI 计算、结果展示和导航。
+ */
 public class MainActivity extends AppCompatActivity {
 
     private EditText heightET, weightET, ageET;
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         // 初始化 ViewModel
         viewModel = new ViewModelProvider(this).get(BMIViewModel.class);
 
-        // 加载保存数据
+        // 加载保存数据，恢复上次输入状态
         String[] data = viewModel.loadSavedData();
         heightET.setText(data[0]);
         weightET.setText(data[1]);
@@ -59,9 +62,10 @@ public class MainActivity extends AppCompatActivity {
         if (data[3].equals(getString(R.string.male))) genderRadioGroup.check(R.id.male_radio);
         else genderRadioGroup.check(R.id.female_radio);
 
+        // 设置监听，任何输入变化立即保存
         setupPersistenceListeners();
 
-        // LiveData 观察
+        // LiveData 观察：当 BMI 结果更新时跳转到报告页
         viewModel.getBmi().observe(this, bmi -> {
             if (bmi != null) {
                 String category = viewModel.getCategory().getValue();
@@ -94,10 +98,12 @@ public class MainActivity extends AppCompatActivity {
             viewModel.calculateBMI(height, weight, age, gender, this);
         });
 
+        // 进入历史记录页面
         historyBtn.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, HistoryActivity.class))
         );
 
+        // 弹出 BMI 解释弹窗
         bmiInfoButton.setOnClickListener(v ->
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle(R.string.what_is_bmi)
@@ -148,6 +154,9 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * 为输入控件添加监听，实时将用户输入保存到本地。
+     */
     private void setupPersistenceListeners() {
         TextWatcher watcher = new TextWatcher() {
             @Override
@@ -169,6 +178,9 @@ public class MainActivity extends AppCompatActivity {
         genderRadioGroup.setOnCheckedChangeListener((group, checkedId) -> persistInputs());
     }
 
+    /**
+     * 读取当前输入框与性别选项，将其交给 ViewModel 做本地持久化。
+     */
     private void persistInputs() {
         int genderId = genderRadioGroup.getCheckedRadioButtonId();
         RadioButton selectedGender = findViewById(genderId);

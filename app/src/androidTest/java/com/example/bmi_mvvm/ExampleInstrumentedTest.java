@@ -11,9 +11,8 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 /**
- * Instrumented test, which will execute on an Android device.
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ * 示例仪器化测试，用于在真机/模拟器上验证应用上下文的包名是否符合预期。
+ * 主要展示如何在 Android 环境下获取 Context 并做断言。
  */
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {

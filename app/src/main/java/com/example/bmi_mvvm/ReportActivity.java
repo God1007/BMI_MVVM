@@ -9,6 +9,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+/**
+ * 展示 BMI 计算结果的页面，负责从 Intent/缓存中兜底读取数据，
+ * 并将 ViewModel 的 LiveData 绑定到 UI 控件。
+ */
 public class ReportActivity extends AppCompatActivity {
 
     private TextView result, category, details, advice;
