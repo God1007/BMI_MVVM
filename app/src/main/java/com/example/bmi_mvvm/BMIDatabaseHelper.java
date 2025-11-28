@@ -10,12 +10,12 @@ import android.database.sqlite.SQLiteOpenHelper; // 导入 SQLiteOpenHelper 简�
 public class BMIDatabaseHelper extends SQLiteOpenHelper { // 继承 SQLiteOpenHelper 实现数据库管理
 
     private static final String DATABASE_NAME = "bmi_history.db"; // 数据库文件名
-    private static final int DATABASE_VERSION = 1; // 数据库版本号
+    private static final int DATABASE_VERSION = 2; // 数据库版本号（升级以修复历史数据缺失问题）
 
     private static final String TABLE_CREATE = // 创建表的 SQL 语句
             "CREATE TABLE bmi_history (" +
             "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "date TEXT NOT NULL, " +
+            "date TEXT NOT NULL UNIQUE, " +
             "bmi REAL NOT NULL" +
             ")"; // 建表语句结束
 
@@ -32,6 +32,6 @@ public class BMIDatabaseHelper extends SQLiteOpenHelper { // 继承 SQLiteOpenHe
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) { // 数据库升级时回调
         // 当前版本简单删除旧表重新创建，实际项目可根据版本差异迁移
         db.execSQL("DROP TABLE IF EXISTS bmi_history"); // 删除旧表
-        onCreate(db); // 重新创建新表
+        onCreate(db); // 重新创建新表，确保日期唯一约束生效
     } // onUpgrade 结束
 } // BMIDatabaseHelper 类结束
