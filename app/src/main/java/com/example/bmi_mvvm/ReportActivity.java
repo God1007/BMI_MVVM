@@ -1,6 +1,8 @@
 package com.example.bmi_mvvm; // 指定包名，声明报告页面类的命名空间
 
 import android.os.Bundle; // 导入 Bundle 处理状态
+import android.content.Intent; // 导入 Intent 以便跳转到历史页面
+import android.widget.Button; // 导入 Button 处理按钮点击
 import android.widget.ImageView; // 导入 ImageView 显示图片
 import android.widget.TextView; // 导入 TextView 显示文本
 
@@ -12,8 +14,9 @@ import androidx.lifecycle.ViewModelProvider; // 导入 ViewModelProvider 获取 
  */
 public class ReportActivity extends AppCompatActivity { // 定义报告页面类
 
-    private TextView bmiText, categoryText, heightText, weightText, ageText, genderText; // 结果展示的文本控件
+    private TextView reportResult, reportCategory, reportDetails, reportAdvice; // 结果展示的文本控件
     private ImageView reportImage; // 根据分类显示图片
+    private Button openHistoryButton; // 跳转历史记录的按钮
     private BMIReportViewModel viewModel; // 报告页面的 ViewModel
 
     @Override
@@ -21,13 +24,12 @@ public class ReportActivity extends AppCompatActivity { // 定义报告页面类
         super.onCreate(savedInstanceState); // 调用父类初始化
         setContentView(R.layout.activity_report); // 设置报告页面布局
 
-        bmiText = findViewById(R.id.bmiText); // 绑定 BMI 数值文本
-        categoryText = findViewById(R.id.categoryText); // 绑定 BMI 分类文本
-        heightText = findViewById(R.id.heightText); // 绑定身高文本
-        weightText = findViewById(R.id.weightText); // 绑定体重文本
-        ageText = findViewById(R.id.ageText); // 绑定年龄文本
-        genderText = findViewById(R.id.genderText); // 绑定性别文本
-        reportImage = findViewById(R.id.reportImage); // 绑定报告图片视图
+        reportResult = findViewById(R.id.report_result); // 绑定 BMI 数值文本
+        reportCategory = findViewById(R.id.report_category); // 绑定 BMI 分类文本
+        reportDetails = findViewById(R.id.report_details); // 绑定详情文本
+        reportAdvice = findViewById(R.id.report_advice); // 绑定建议文本
+        reportImage = findViewById(R.id.report_image); // 绑定报告图片视图
+        openHistoryButton = findViewById(R.id.open_history_button); // 绑定跳转历史按钮
 
         viewModel = new ViewModelProvider(this).get(BMIReportViewModel.class); // 获取 ViewModel 实例
 
@@ -46,17 +48,19 @@ public class ReportActivity extends AppCompatActivity { // 定义报告页面类
         } // 条件判断结束
 
         viewModel.getReportData().observe(this, this::renderReport); // 观察报告数据变化并渲染界面
+
+        openHistoryButton.setOnClickListener(v -> // 点击按钮时跳转到历史记录
+                startActivity(new Intent(ReportActivity.this, HistoryActivity.class))
+        );
     } // onCreate 结束
 
     private void renderReport(BMIReportData data) { // 根据报告数据更新 UI
         if (data == null) return; // 若无数据直接返回
 
-        bmiText.setText(data.getBmiValue()); // 显示 BMI 数值
-        categoryText.setText(data.getBmiCategory()); // 显示 BMI 分类
-        heightText.setText(getString(R.string.height_with_unit, data.getHeight())); // 显示身高及单位
-        weightText.setText(getString(R.string.weight_with_unit, data.getWeight())); // 显示体重及单位
-        ageText.setText(getString(R.string.age_years, data.getAge())); // 显示年龄及单位
-        genderText.setText(data.getGender()); // 显示性别
+        reportResult.setText(getString(R.string.bmi_result) + data.getBmiValue()); // 显示 BMI 数值
+        reportCategory.setText(getString(R.string.Category) + " " + data.getBmiCategory()); // 显示 BMI 分类
+        reportDetails.setText(getString(R.string.details_format, data.getHeight(), data.getWeight(), data.getAge(), data.getGender())); // 显示详细信息
+        reportAdvice.setText(R.string.advice_message); // 显示通用建议
 
         String category = data.getBmiCategory(); // 取出分类字符串
         if (category.contains(getString(R.string.bmi_category_underweight))) { // 判断是否偏瘦
