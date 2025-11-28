@@ -76,8 +76,8 @@ public class HistoryActivity extends AppCompatActivity {
         }
 
         LineDataSet dataSet = new LineDataSet(entries, getString(R.string.history_chart_label));
-        dataSet.setColor(ContextCompat.getColor(this, R.color.purple_500));
-        dataSet.setCircleColor(ContextCompat.getColor(this, R.color.purple_500));
+        dataSet.setColor(ContextCompat.getColor(this, R.color.purple_700));
+        dataSet.setCircleColor(ContextCompat.getColor(this, R.color.purple_700));
         dataSet.setLineWidth(2f);
         dataSet.setCircleRadius(4f);
         dataSet.setValueTextSize(10f);
