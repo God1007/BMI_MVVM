@@ -1,63 +1,37 @@
-package com.example.bmi_mvvm;
+package com.example.bmi_mvvm; // 指定包名，声明报告 ViewModel 的命名空间
 
-import android.content.Context;
-import android.content.Intent;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import android.app.Application; // 导入 Application 以便获取应用级 Context
+
+import androidx.annotation.NonNull; // 导入注解确保非空
+import androidx.lifecycle.AndroidViewModel; // 导入 AndroidViewModel 以便持有 Application
+import androidx.lifecycle.LiveData; // 导入 LiveData 用于暴露数据
+import androidx.lifecycle.MutableLiveData; // 导入 MutableLiveData 支持更新
 
 /**
- * 负责报告页的数据准备，接收 Intent 中的参数，转交给模型计算，
- * 再通过 LiveData 暴露给界面层。
+ * 报告页面的 ViewModel，负责从模型读取上一次 BMI 结果并暴露给界面。
  */
-public class BMIReportViewModel extends ViewModel {
+public class BMIReportViewModel extends AndroidViewModel { // 继承 AndroidViewModel 以获取 Application
 
-    private final MutableLiveData<String> bmi = new MutableLiveData<>();
-    private final MutableLiveData<String> category = new MutableLiveData<>();
-    private final MutableLiveData<String> details = new MutableLiveData<>();
-    private final MutableLiveData<String> advice = new MutableLiveData<>();
-    private final MutableLiveData<Integer> imageRes = new MutableLiveData<>();
-    private final MutableLiveData<String> error = new MutableLiveData<>();
+    private final BMIReportModel model; // 持有报告模型
+    private final MutableLiveData<BMIReportData> reportData = new MutableLiveData<>(); // 保存报告数据的 LiveData
 
-    private final BMIReportModel model = new BMIReportModel();
+    public BMIReportViewModel(@NonNull Application application) { // 构造函数接收 Application
+        super(application); // 调用父类构造
+        model = new BMIReportModel(application); // 初始化模型
+        loadReport(); // 构造时立即加载上次报告
+    } // 构造函数结束
 
-    public LiveData<String> getBmi() { return bmi; }
-    public LiveData<String> getCategory() { return category; }
-    public LiveData<String> getDetails() { return details; }
-    public LiveData<String> getAdvice() { return advice; }
-    public LiveData<Integer> getImageRes() { return imageRes; }
-    public LiveData<String> getError() { return error; }
+    public LiveData<BMIReportData> getReportData() { // 获取报告数据的 LiveData
+        return reportData; // 返回可观察对象
+    } // getReportData 结束
 
-    /**
-     * 从 Intent 读取 BMI 相关参数，调用模型获取报告数据，
-     * 然后将格式化后的文本与图片资源更新到各个 LiveData。
-     */
-    public void loadReportData(Intent intent, Context context) {
-        try {
-            String bmiValue = intent.getStringExtra("bmi");
-            String bmiCategory = intent.getStringExtra("bmi_category");
-            String height = intent.getStringExtra("height");
-            String weight = intent.getStringExtra("weight");
-            String age = intent.getStringExtra("age");
-            String gender = intent.getStringExtra("gender");
+    public void loadReport() { // 从模型加载上次计算结果
+        BMIReportData data = model.loadLastReport(getApplication()); // 调用模型读取数据
+        reportData.setValue(data); // 更新 LiveData 供界面显示
+    } // loadReport 结束
 
-            int ageVal = Integer.parseInt(age);
-
-            // 使用 Model 获取图片 + 建议
-            BMIReportData data = model.getBMIReportData(context, bmiCategory, gender, ageVal);
-
-            // 更新 LiveData
-            bmi.setValue(bmiValue);
-            category.setValue(bmiCategory);
-            details.setValue(context.getString(R.string.details_format, height, weight, age, gender));
-            imageRes.setValue(data.imageRes);
-            advice.setValue(data.advice);
-
-        } catch (Exception e) {
-            // 捕获任何异常并向界面层抛出友好提示，避免闪退。
-            error.setValue(context.getString(R.string.report_load_failed));
-            e.printStackTrace();
-        }
-    }
-
-}
+    public void saveReport(BMIReportData data) { // 将报告数据保存到模型
+        model.saveReport(data); // 委托模型保存
+        reportData.setValue(data); // 同步更新 LiveData
+    } // saveReport 结束
+} // BMIReportViewModel 类结束
