@@ -55,11 +55,11 @@ public class ReportActivity extends AppCompatActivity {
 
         // ✅ Step 4: 绑定 LiveData
         viewModel.getBmi().observe(this, value ->
-                result.setText("BMI: " + value)
+                result.setText(getString(R.string.YourBMI) + " " + value)
         );
 
         viewModel.getCategory().observe(this, cat ->
-                category.setText("分类: " + cat)
+                category.setText(getString(R.string.Category) + " " + cat)
         );
 
         viewModel.getDetails().observe(this, text ->
@@ -75,7 +75,7 @@ public class ReportActivity extends AppCompatActivity {
         );
 
         viewModel.getError().observe(this, msg -> {
-            result.setText("错误: " + msg);
+            result.setText(getString(R.string.error_occurred) + " " + msg);
             advice.setText("");
         });
     }

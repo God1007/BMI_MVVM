@@ -31,7 +31,7 @@ public class BMIViewModel extends ViewModel {
 
     public void calculateBMI(String h, String w, String a, String g, Context context) {
         if (h.isEmpty() || w.isEmpty() || a.isEmpty()) {
-            error.setValue("请填写完整信息");
+            error.setValue(context.getString(R.string.error_empty_fields));
             return;
         }
 
@@ -61,7 +61,7 @@ public class BMIViewModel extends ViewModel {
             bmi.setValue(String.format("%.2f", bmiVal));
 
         } catch (NumberFormatException e) {
-            error.setValue("输入数据格式错误");
+            error.setValue(context.getString(R.string.error_invalid_number));
             e.printStackTrace();
         }
     }

@@ -8,40 +8,47 @@ public class BMIReportModel {
         BMIReportData data = new BMIReportData();
         boolean isChild = age < 18;
 
-        switch (bmiCategory) {
-            case "Underweight":
-                data.imageRes = R.drawable.bot_thin;
-                data.advice = getUnderweightAdvice(context, gender, isChild);
-                break;
-            case "Normal Range":
-                data.imageRes = R.drawable.bot_fit;
-                data.advice = getNormalWeightAdvice(context, gender, isChild);
-                break;
-            case "Overweight":
-                data.imageRes = R.drawable.bot_fat;
-                data.advice = getOverweightAdvice(context, gender, isChild);
-                break;
-            case "Obese":
-                data.imageRes = R.drawable.bot_fat;
-                data.advice = getObeseAdvice(context, gender, isChild);
-                break;
-            case "Severely Underweight":
-            case "child_Underweight":
-                data.imageRes = R.drawable.bot_thin;
-                data.advice = getSeverelyUnderweightAdvice(context, gender, isChild);
-                break;
-            case "Acceptable Weight":
-                data.imageRes = R.drawable.bot_fit;
-                data.advice = getAcceptableWeightAdvice(context, gender);
-                break;
-            case "Severely Overweight":
-            case "child_Overweight":
-                data.imageRes = R.drawable.bot_fat;
-                data.advice = getSeverelyOverweightAdvice(context, gender, isChild);
-                break;
-            default:
-                data.imageRes = R.drawable.bot_fit;
-                data.advice = context.getString(R.string.advice_message);
+        String adultUnderweight = context.getString(R.string.bmi_category_underweight);
+        String adultNormal = context.getString(R.string.bmi_category_normal);
+        String adultOverweight = context.getString(R.string.bmi_category_overweight);
+        String adultObese = context.getString(R.string.bmi_category_obese);
+
+        String childSeverelyUnder = context.getString(R.string.bmi_category_child_severelyUnderweight);
+        String childUnder = context.getString(R.string.bmi_category_child_Underweight);
+        String childAcceptable = context.getString(R.string.bmi_category_child_AcceptableWeight);
+        String childOver = context.getString(R.string.bmi_category_child_Overweight);
+        String childSeverelyOver = context.getString(R.string.bmi_category_child_Severely_Overweight);
+
+        if (bmiCategory == null || bmiCategory.isEmpty()) {
+            data.imageRes = R.drawable.bot_fit;
+            data.advice = context.getString(R.string.advice_message);
+            return data;
+        }
+
+        if (bmiCategory.equals(adultUnderweight) || bmiCategory.equals(childUnder)) {
+            data.imageRes = R.drawable.bot_thin;
+            data.advice = getUnderweightAdvice(context, gender, isChild);
+        } else if (bmiCategory.equals(adultNormal)) {
+            data.imageRes = R.drawable.bot_fit;
+            data.advice = getNormalWeightAdvice(context, gender, isChild);
+        } else if (bmiCategory.equals(childAcceptable)) {
+            data.imageRes = R.drawable.bot_fit;
+            data.advice = getAcceptableWeightAdvice(context, gender);
+        } else if (bmiCategory.equals(adultOverweight) || bmiCategory.equals(childOver)) {
+            data.imageRes = R.drawable.bot_fat;
+            data.advice = getOverweightAdvice(context, gender, isChild);
+        } else if (bmiCategory.equals(adultObese)) {
+            data.imageRes = R.drawable.bot_fat;
+            data.advice = getObeseAdvice(context, gender, isChild);
+        } else if (bmiCategory.equals(childSeverelyUnder)) {
+            data.imageRes = R.drawable.bot_thin;
+            data.advice = getSeverelyUnderweightAdvice(context, gender, isChild);
+        } else if (bmiCategory.equals(childSeverelyOver)) {
+            data.imageRes = R.drawable.bot_fat;
+            data.advice = getSeverelyOverweightAdvice(context, gender, isChild);
+        } else {
+            data.imageRes = R.drawable.bot_fit;
+            data.advice = context.getString(R.string.advice_message);
         }
         return data;
     }
