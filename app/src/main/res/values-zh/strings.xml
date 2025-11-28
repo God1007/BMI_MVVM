@@ -10,7 +10,6 @@
     <string name="bmi_result">您的BMI结果为</string>
     <string name="advice_average">你看起来状态很好！</string>
     <string name="bmi_picture_for_adult">成年人BMI参考图</string>
-    <string name="judge_standard">评估标准</string>
     <string name="adult_18_years_old"><![CDATA[成年人（> 18岁）]]></string>
     <string name="child_18_years_old"><![CDATA[儿童（≤ 18岁）]]></string>
     <string name="choose_the_identity_u_r">请选择您的身份</string>

@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText heightET, weightET, ageET;
     private RadioGroup genderRadioGroup;
     private Button reportBtn;
+    private Button bmiInfoButton;
     private Button historyBtn;
     private ImageView imageView;
 
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         ageET = findViewById(R.id.yearsold);
         genderRadioGroup = findViewById(R.id.gender_radio_group);
         reportBtn = findViewById(R.id.reportBtn);
+        bmiInfoButton = findViewById(R.id.bmi_info_button);
         historyBtn = findViewById(R.id.historyBtn);
         imageView = findViewById(R.id.imageView3);
 
@@ -93,6 +96,14 @@ public class MainActivity extends AppCompatActivity {
 
         historyBtn.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, HistoryActivity.class))
+        );
+
+        bmiInfoButton.setOnClickListener(v ->
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(R.string.what_is_bmi)
+                        .setMessage(R.string.bmi_info_text)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .show()
         );
     }
 
