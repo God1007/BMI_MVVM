@@ -11,6 +11,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * 历史记录仓库，封装对 SQLite 数据库的读写操作。
+ * 提供保存当日 BMI 结果以及读取全部历史的接口，供 ViewModel 使用。
+ */
 public class BMIHistoryRepository {
 
     private final BMIDatabaseHelper dbHelper;
@@ -19,6 +23,10 @@ public class BMIHistoryRepository {
         dbHelper = new BMIDatabaseHelper(context.getApplicationContext());
     }
 
+    /**
+     * 将当日 BMI 结果保存到数据库。主键是日期，
+     * 因此使用 CONFLICT_REPLACE 保证同一天多次计算会覆盖最新结果。
+     */
     public void saveTodayResult(double bmiValue) {
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
@@ -36,6 +44,9 @@ public class BMIHistoryRepository {
         );
     }
 
+    /**
+     * 读取所有历史记录并按日期升序排序，供历史页面和图表展示。
+     */
     public List<BMIRecord> getAllRecords() {
         List<BMIRecord> records = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();

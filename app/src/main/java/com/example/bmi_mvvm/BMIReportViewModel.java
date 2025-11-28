@@ -6,6 +6,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+/**
+ * 负责报告页的数据准备，接收 Intent 中的参数，转交给模型计算，
+ * 再通过 LiveData 暴露给界面层。
+ */
 public class BMIReportViewModel extends ViewModel {
 
     private final MutableLiveData<String> bmi = new MutableLiveData<>();
@@ -24,6 +28,10 @@ public class BMIReportViewModel extends ViewModel {
     public LiveData<Integer> getImageRes() { return imageRes; }
     public LiveData<String> getError() { return error; }
 
+    /**
+     * 从 Intent 读取 BMI 相关参数，调用模型获取报告数据，
+     * 然后将格式化后的文本与图片资源更新到各个 LiveData。
+     */
     public void loadReportData(Intent intent, Context context) {
         try {
             String bmiValue = intent.getStringExtra("bmi");
@@ -46,6 +54,7 @@ public class BMIReportViewModel extends ViewModel {
             advice.setValue(data.advice);
 
         } catch (Exception e) {
+            // 捕获任何异常并向界面层抛出友好提示，避免闪退。
             error.setValue(context.getString(R.string.report_load_failed));
             e.printStackTrace();
         }

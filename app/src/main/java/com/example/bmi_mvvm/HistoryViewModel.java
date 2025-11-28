@@ -9,6 +9,9 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
+/**
+ * 为历史页面提供数据的 ViewModel，负责从仓库读取历史记录并放入 LiveData。
+ */
 public class HistoryViewModel extends AndroidViewModel {
 
     private final BMIHistoryRepository repository;
@@ -24,6 +27,9 @@ public class HistoryViewModel extends AndroidViewModel {
         return history;
     }
 
+    /**
+     * 读取数据库中的所有历史记录并立即推送给观察者。
+     */
     public void loadHistory() {
         history.setValue(repository.getAllRecords());
     }

@@ -2,8 +2,15 @@ package com.example.bmi_mvvm;
 
 import android.content.Context;
 
+/**
+ * 根据 BMI 分类、性别与年龄，生成报告页需要展示的图片和建议文案。
+ * 将业务逻辑集中在模型层，保证 ViewModel 只负责数据流转。
+ */
 public class BMIReportModel {
 
+    /**
+     * 根据分类映射到对应的图片与建议，如果分类为空则给出默认提示。
+     */
     public BMIReportData getBMIReportData(Context context, String bmiCategory, String gender, int age) {
         BMIReportData data = new BMIReportData();
         boolean isChild = age < 18;
@@ -19,12 +26,14 @@ public class BMIReportModel {
         String childOver = context.getString(R.string.bmi_category_child_Overweight);
         String childSeverelyOver = context.getString(R.string.bmi_category_child_Severely_Overweight);
 
+        // 没有分类时返回默认图片与文案，避免空指针。
         if (bmiCategory == null || bmiCategory.isEmpty()) {
             data.imageRes = R.drawable.bot_fit;
             data.advice = context.getString(R.string.advice_message);
             return data;
         }
 
+        // 成人与儿童分类组合不同，统一在此做映射。
         if (bmiCategory.equals(adultUnderweight) || bmiCategory.equals(childUnder)) {
             data.imageRes = R.drawable.bot_thin;
             data.advice = getUnderweightAdvice(context, gender, isChild);

@@ -5,6 +5,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+/**
+ * 主页面的 ViewModel，负责 BMI 计算、数据校验、持久化以及历史记录写入。
+ * 通过 LiveData 将结果与错误信息推送给 UI 层。
+ */
 public class BMIViewModel extends ViewModel {
 
     private BMIModel model;
@@ -31,10 +35,17 @@ public class BMIViewModel extends ViewModel {
     public LiveData<String> getGender() { return gender; }
     public LiveData<String> getError() { return error; }
 
+    /**
+     * 将当前输入同步保存到本地，用户离开页面再回来时可继续编辑。
+     */
     public void persistInputs(String h, String w, String a, String g) {
         model.saveData(h, w, a, g);
     }
 
+    /**
+     * 负责校验输入、执行 BMI 计算、分类判定，并保存结果与历史。
+     * 通过 LiveData 依次推送分类、身高、体重等字段，确保观察者拿到完整数据。
+     */
     public void calculateBMI(String h, String w, String a, String g, Context context) {
         if (h.isEmpty() || w.isEmpty() || a.isEmpty()) {
             error.setValue(context.getString(R.string.error_empty_fields));
@@ -74,6 +85,9 @@ public class BMIViewModel extends ViewModel {
         }
     }
 
+    /**
+     * 加载上一次保存的输入数据，用于初始化界面。
+     */
     public String[] loadSavedData() {
         return model.loadData();
     }
