@@ -27,7 +27,7 @@ public class BMIHistoryRepository { // 定义仓库类
         ContentValues values = new ContentValues(); // 创建 ContentValues 存储字段
         values.put("date", getTodayDate()); // 写入当前日期
         values.put("bmi", bmi); // 写入 BMI 数值
-        db.insert("bmi_history", null, values); // 插入到表中
+        db.insertWithOnConflict("bmi_history", null, values, SQLiteDatabase.CONFLICT_REPLACE); // 如果同一天已有记录则覆盖
         db.close(); // 关闭数据库连接
     } // saveTodayResult 结束
 
