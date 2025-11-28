@@ -125,29 +125,12 @@
 
             </RadioGroup>
 
-            <LinearLayout
+            <Button
+                android:id="@+id/bmi_info_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginTop="16dp">
-
-                <Button
-                    android:id="@+id/BMI_table_choice_button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:text="@string/judge_standard" />
-
-                <Button
-                    android:id="@+id/bmi_info_button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/what_is_bmi" />
-            </LinearLayout>
+                android:layout_marginTop="16dp"
+                android:text="@string/what_is_bmi" />
 
             <Button
                 android:id="@+id/reportBtn"

@@ -9,7 +9,6 @@
     <string name="bmi_result">Your bmi result is </string>
     <string name="advice_average">You look great!</string>
     <string name="bmi_picture_for_adult">BMI picture for adult.</string>
-    <string name="judge_standard">Judge Standard</string>
     <string name="adult_18_years_old"><![CDATA[adult(> 18 years old)]]></string>
     <string name="child_18_years_old"><![CDATA[child(<= 18 years old)]]></string>
     <string name="choose_the_identity_u_r">Choose the identity u\'r</string>
