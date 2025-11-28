@@ -123,5 +123,8 @@
     <string name="bmi_wiki">BMI Wiki</string>
     <string name="exit">Exit</string>
 
+    <string name="report_load_failed">Failed to load BMI report</string>
+    <string name="bmi_wiki_url">https://en.wikipedia.org/wiki/Body_mass_index</string>
+
 
 </resources>

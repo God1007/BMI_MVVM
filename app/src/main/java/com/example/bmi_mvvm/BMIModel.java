@@ -5,10 +5,12 @@ import android.content.SharedPreferences;
 
 public class BMIModel {
 
-    private SharedPreferences sharedPreferences;
+    private final SharedPreferences sharedPreferences;
+    private final Context context;
 
     public BMIModel(Context context) {
-        sharedPreferences = context.getSharedPreferences("BMI_Data", Context.MODE_PRIVATE);
+        this.context = context.getApplicationContext();
+        sharedPreferences = this.context.getSharedPreferences("BMI_Data", Context.MODE_PRIVATE);
     }
 
     // BMI 计算
@@ -84,7 +86,7 @@ public class BMIModel {
         editor.putString("height", height);
         editor.putString("weight", weight);
         editor.putString("age", age);
-        editor.putInt("gender_code", gender.equals("男") ? 1 : 2);
+        editor.putString("gender", gender);
         editor.apply();
     }
 
@@ -92,8 +94,7 @@ public class BMIModel {
         String height = sharedPreferences.getString("height", "");
         String weight = sharedPreferences.getString("weight", "");
         String age = sharedPreferences.getString("age", "");
-        int genderCode = sharedPreferences.getInt("gender_code", 1);
-        String gender = genderCode == 1 ? "男" : "女";
+        String gender = sharedPreferences.getString("gender", context.getString(R.string.male));
         return new String[]{height, weight, age, gender};
     }
 }

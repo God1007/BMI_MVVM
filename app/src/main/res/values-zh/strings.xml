@@ -124,4 +124,6 @@
     <string name="bmi_info_text">BMI（身体质量指数）= 体重(kg) ÷ 身高²(m)\n\n它用于评估一个人的体重是否处于健康范围。</string>
     <string name="bmi_wiki">BMI维基百科</string>
     <string name="exit">退出</string>
+    <string name="report_load_failed">报告加载失败</string>
+    <string name="bmi_wiki_url">https://zh.wikipedia.org/wiki/BMI</string>
 </resources>

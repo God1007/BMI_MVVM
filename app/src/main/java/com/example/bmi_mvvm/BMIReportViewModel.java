@@ -41,17 +41,12 @@ public class BMIReportViewModel extends ViewModel {
             // 更新 LiveData
             bmi.setValue(bmiValue);
             category.setValue(bmiCategory);
-            details.setValue(
-                    "身高: " + height + " cm\n" +
-                            "体重: " + weight + " kg\n" +
-                            "年龄: " + age + "\n" +
-                            "性别: " + gender
-            );
+            details.setValue(context.getString(R.string.details_format, height, weight, age, gender));
             imageRes.setValue(data.imageRes);
             advice.setValue(data.advice);
 
         } catch (Exception e) {
-            error.setValue("报告加载失败");
+            error.setValue(context.getString(R.string.report_load_failed));
             e.printStackTrace();
         }
     }

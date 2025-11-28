@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         heightET.setText(data[0]);
         weightET.setText(data[1]);
         ageET.setText(data[2]);
-        if (data[3].equals("男")) genderRadioGroup.check(R.id.male_radio);
+        if (data[3].equals(getString(R.string.male))) genderRadioGroup.check(R.id.male_radio);
         else genderRadioGroup.check(R.id.female_radio);
 
         // LiveData 观察
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean handleMenuClick(MenuItem item, Context context) {
         int id = item.getItemId();
         if (id == R.id.menu_bmi_wiki) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://zh.wikipedia.org/wiki/BMI"));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.bmi_wiki_url)));
             context.startActivity(intent);
             return true;
         } else if (id == R.id.menu_exit) {
